@@ -285,7 +285,8 @@ private:
     }
 
     ~_interpreter() {
-        Py_Finalize();
+        // temporary avoid crash
+        // Py_Finalize();
     }
 };
 
@@ -351,9 +352,9 @@ template <> struct select_npy_type<uint64_t> { const static NPY_TYPES type = NPY
 // Sanity checks; comment them out or change the numpy type below if you're compiling on
 // a platform where they don't apply
 static_assert(sizeof(long long) == 8);
-template <> struct select_npy_type<long long> { const static NPY_TYPES type = NPY_INT64; };
+//template <> struct select_npy_type<long long> { const static NPY_TYPES type = NPY_INT64; };
 static_assert(sizeof(unsigned long long) == 8);
-template <> struct select_npy_type<unsigned long long> { const static NPY_TYPES type = NPY_UINT64; };
+//template <> struct select_npy_type<unsigned long long> { const static NPY_TYPES type = NPY_UINT64; };
 
 template<typename Numeric>
 PyObject* get_array(const std::vector<Numeric>& v)
@@ -2895,7 +2896,7 @@ public:
         assert(x.size() == y.size());
 
         PyObject* kwargs = PyDict_New();
-        if(name != "")
+        if (name != "")
             PyDict_SetItemString(kwargs, "label", PyString_FromString(name.c_str()));
 
         PyObject* xarray = detail::get_array(x);
@@ -2913,12 +2914,12 @@ public:
         Py_DECREF(kwargs);
         Py_DECREF(plot_args);
 
-        if(res)
+        if (res)
         {
-            line= PyList_GetItem(res, 0);
+            line = PyList_GetItem(res, 0);
 
-            if(line)
-                set_data_fct = PyObject_GetAttrString(line,"set_data");
+            if (line)
+                set_data_fct = PyObject_GetAttrString(line, "set_data");
             else
                 Py_DECREF(line);
             Py_DECREF(res);
@@ -2933,7 +2934,7 @@ public:
     template<typename Numeric>
     bool update(const std::vector<Numeric>& x, const std::vector<Numeric>& y) {
         assert(x.size() == y.size());
-        if(set_data_fct)
+        if (set_data_fct)
         {
             PyObject* xarray = detail::get_array(x);
             PyObject* yarray = detail::get_array(y);
@@ -2956,9 +2957,9 @@ public:
 
     // definitely remove this line
     void remove() {
-        if(line)
+        if (line)
         {
-            auto remove_fct = PyObject_GetAttrString(line,"remove");
+            auto remove_fct = PyObject_GetAttrString(line, "remove");
             PyObject* args = PyTuple_New(0);
             PyObject* res = PyObject_CallObject(remove_fct, args);
             if (res) Py_DECREF(res);
@@ -2972,9 +2973,9 @@ public:
 private:
 
     void decref() {
-        if(line)
+        if (line)
             Py_DECREF(line);
-        if(set_data_fct)
+        if (set_data_fct)
             Py_DECREF(set_data_fct);
     }
 
