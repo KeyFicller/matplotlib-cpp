@@ -559,7 +559,7 @@ void plot_surface(const std::vector<::std::vector<Numeric>> &x,
   PyObject *gca_kwargs = PyDict_New();
   PyDict_SetItemString(gca_kwargs, "projection", PyString_FromString("3d"));
 
-  PyObject *gca = PyObject_GetAttrString(fig, "gca");
+  PyObject *gca = PyObject_GetAttrString(fig, "add_subplot");
   if (!gca) throw std::runtime_error("No gca");
   Py_INCREF(gca);
   PyObject *axis = PyObject_Call(
